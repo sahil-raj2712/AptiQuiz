@@ -17,6 +17,7 @@ const SERVER_URL = process.env.SERVER_URL || "http://localhost:4000";
 const TOTAL_PLAYERS = 50;
 
 const COLLEGES = [
+  "NIET", "GL BAJAJ", "AMITY",
   "IIT Bombay", "BITS Pilani", "NIT Trichy", "DTU Delhi",
   "VIT Vellore", "IIIT Hyderabad", "COEP Pune", "RVCE Bangalore"
 ];

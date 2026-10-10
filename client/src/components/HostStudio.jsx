@@ -9,10 +9,11 @@ export default function HostStudio({ onRoomCreated }) {
   const [selectedSetToLaunch, setSelectedSetToLaunch] = useState(null);
 
   // Match Configuration Options
-  const [hostCollege, setHostCollege] = useState("National Tech Placement Arena");
+  const [hostCollege, setHostCollege] = useState("NIET");
   const [roundDuration, setRoundDuration] = useState(25);
   const [powerUpsEnabled, setPowerUpsEnabled] = useState(true);
   const [allowNegativeMarking, setAllowNegativeMarking] = useState(false);
+  const [autoAdvance, setAutoAdvance] = useState(true);
   const [launching, setLaunching] = useState(false);
 
   // New Question Set State
@@ -119,7 +120,9 @@ export default function HostStudio({ onRoomCreated }) {
         hostCollege,
         roundDurationSeconds: roundDuration,
         powerUpsEnabled,
-        allowNegativeMarking
+        allowNegativeMarking,
+        autoAdvance,
+        reviewDurationSeconds: 7
       }
     }, (res) => {
       setLaunching(false);
@@ -244,25 +247,71 @@ export default function HostStudio({ onRoomCreated }) {
                   value={hostCollege}
                   onChange={(e) => setHostCollege(e.target.value)}
                   className="input-field"
-                  placeholder="e.g. IIT Bombay / DTU Delhi"
+                  placeholder="e.g. NIET / GL BAJAJ / AMITY"
                 />
               </div>
 
               <div>
-                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "600", marginBottom: "6px", color: "#cbd5e1" }}>
-                  DEFAULT QUESTION TIME LIMIT
-                </label>
-                <select
-                  value={roundDuration}
-                  onChange={(e) => setRoundDuration(Number(e.target.value))}
-                  className="input-field"
-                  style={{ background: "#0e1320" }}
-                >
-                  <option value={15}>15 Seconds (Blitz Pressure)</option>
-                  <option value={20}>20 Seconds (Standard Placement Speed)</option>
-                  <option value={25}>25 Seconds (Analytical & Math)</option>
-                  <option value={35}>35 Seconds (Data Interpretation Charts)</option>
-                </select>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                  <label style={{ fontSize: "0.85rem", fontWeight: "600", color: "#cbd5e1" }}>
+                    TIME PER QUESTION IN THIS MATCH
+                  </label>
+                  <span style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--secondary)", fontFamily: "var(--font-mono)" }}>
+                    ⏱️ {roundDuration} Seconds
+                  </span>
+                </div>
+
+                {/* Quick Presets */}
+                <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "10px" }}>
+                  {[10, 15, 20, 25, 30, 45, 60, 90].map((sec) => (
+                    <button
+                      key={sec}
+                      type="button"
+                      onClick={() => setRoundDuration(sec)}
+                      style={{
+                        padding: "6px 12px",
+                        fontSize: "0.8rem",
+                        fontWeight: "600",
+                        borderRadius: "var(--radius-sm)",
+                        border: roundDuration === sec ? "2px solid var(--secondary)" : "1px solid var(--border-subtle)",
+                        background: roundDuration === sec ? "rgba(6, 182, 212, 0.2)" : "rgba(255, 255, 255, 0.04)",
+                        color: roundDuration === sec ? "#ffffff" : "var(--text-muted)",
+                        cursor: "pointer",
+                        transition: "all 0.15s ease"
+                      }}
+                    >
+                      {sec}s
+                    </button>
+                  ))}
+                </div>
+
+                {/* Custom numeric slider / input */}
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <input
+                    type="range"
+                    min={5}
+                    max={120}
+                    step={5}
+                    value={roundDuration}
+                    onChange={(e) => setRoundDuration(Number(e.target.value))}
+                    style={{ flex: 1, accentColor: "var(--secondary)" }}
+                  />
+                  <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                    <input
+                      type="number"
+                      min={5}
+                      max={300}
+                      value={roundDuration}
+                      onChange={(e) => setRoundDuration(Math.max(5, Math.min(300, Number(e.target.value) || 25)))}
+                      className="input-field"
+                      style={{ width: "70px", padding: "6px 8px", textAlign: "center", fontFamily: "var(--font-mono)", fontWeight: "700" }}
+                    />
+                    <span style={{ fontSize: "0.8rem", color: "var(--text-dim)" }}>sec</span>
+                  </div>
+                </div>
+                <span style={{ fontSize: "0.75rem", color: "var(--text-dim)", display: "block", marginTop: "4px" }}>
+                  All candidates will simultaneously race with this exact countdown per question.
+                </span>
               </div>
 
               {/* Toggles */}
@@ -290,6 +339,19 @@ export default function HostStudio({ onRoomCreated }) {
                     checked={allowNegativeMarking}
                     onChange={(e) => setAllowNegativeMarking(e.target.checked)}
                     style={{ width: "20px", height: "20px", accentColor: "var(--accent-rose)" }}
+                  />
+                </label>
+
+                <label style={{ display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer" }}>
+                  <div>
+                    <span style={{ fontWeight: "600", fontSize: "0.92rem", display: "block" }}>Auto-Advance to Next Round</span>
+                    <span style={{ fontSize: "0.78rem", color: "var(--text-dim)" }}>Automatically advances after 7s review without host having to click every question</span>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={autoAdvance}
+                    onChange={(e) => setAutoAdvance(e.target.checked)}
+                    style={{ width: "20px", height: "20px", accentColor: "var(--accent-emerald)" }}
                   />
                 </label>
               </div>
@@ -373,7 +435,7 @@ export default function HostStudio({ onRoomCreated }) {
                     )}
                   </div>
 
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr 1fr", gap: "12px", marginBottom: "12px" }}>
                     <div>
                       <label style={{ fontSize: "0.8rem", color: "var(--text-dim)" }}>Topic</label>
                       <select
@@ -409,6 +471,23 @@ export default function HostStudio({ onRoomCreated }) {
                         <option value="Medium">Medium</option>
                         <option value="Hard">Hard</option>
                       </select>
+                    </div>
+
+                    <div>
+                      <label style={{ fontSize: "0.8rem", color: "var(--text-dim)" }}>Time Limit (Sec)</label>
+                      <input
+                        type="number"
+                        min={5}
+                        max={180}
+                        value={q.timeLimitSeconds || 25}
+                        onChange={(e) => {
+                          const updated = [...newQuestions];
+                          updated[idx].timeLimitSeconds = Number(e.target.value) || 25;
+                          setNewQuestions(updated);
+                        }}
+                        className="input-field"
+                        style={{ background: "#0e1320" }}
+                      />
                     </div>
                   </div>
 

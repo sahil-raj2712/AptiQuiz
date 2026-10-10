@@ -1,0 +1,472 @@
+{
+  "colleges": {
+    "NIET": {
+      "matchesPlayed": 19,
+      "totalPoints": 144976,
+      "topScore": 9950
+    },
+    "GL BAJAJ": {
+      "matchesPlayed": 16,
+      "totalPoints": 136200,
+      "topScore": 9890
+    },
+    "AMITY": {
+      "matchesPlayed": 15,
+      "totalPoints": 129255,
+      "topScore": 9780
+    },
+    "IIT Bombay": {
+      "matchesPlayed": 15,
+      "totalPoints": 128012,
+      "topScore": 9800
+    },
+    "BITS Pilani": {
+      "matchesPlayed": 13,
+      "totalPoints": 113804,
+      "topScore": 9650
+    },
+    "NIT Trichy": {
+      "matchesPlayed": 11,
+      "totalPoints": 89400,
+      "topScore": 9400
+    },
+    "DTU Delhi": {
+      "matchesPlayed": 10,
+      "totalPoints": 82869,
+      "topScore": 9100
+    },
+    "VIT Vellore": {
+      "matchesPlayed": 16,
+      "totalPoints": 133850,
+      "topScore": 9550
+    },
+    "National Tech League": {
+      "matchesPlayed": 3,
+      "totalPoints": 54859,
+      "topScore": 2023
+    },
+    "IIIT Hyderabad": {
+      "matchesPlayed": 1,
+      "totalPoints": 3818,
+      "topScore": 1952
+    },
+    "COEP Pune": {
+      "matchesPlayed": 1,
+      "totalPoints": 2191,
+      "topScore": 759
+    },
+    "RVCE Bangalore": {
+      "matchesPlayed": 1,
+      "totalPoints": 925,
+      "topScore": 925
+    }
+  },
+  "topPlayers": [
+    {
+      "name": "Aman Singh",
+      "college": "NIET",
+      "matches": 8,
+      "score": 34200,
+      "accuracy": 94
+    },
+    {
+      "name": "Sneha Gupta",
+      "college": "GL BAJAJ",
+      "matches": 7,
+      "score": 31500,
+      "accuracy": 91
+    },
+    {
+      "name": "Kabir Mehta",
+      "college": "AMITY",
+      "matches": 7,
+      "score": 29800,
+      "accuracy": 89
+    },
+    {
+      "name": "Arjun Verma",
+      "college": "IIT Bombay",
+      "matches": 6,
+      "score": 28400,
+      "accuracy": 92
+    },
+    {
+      "name": "Priya Sharma",
+      "college": "BITS Pilani",
+      "matches": 5,
+      "score": 24100,
+      "accuracy": 88
+    },
+    {
+      "name": "Rohan Patel",
+      "college": "NIT Trichy",
+      "matches": 4,
+      "score": 19800,
+      "accuracy": 85
+    },
+    {
+      "name": "Candidate_17",
+      "college": "DTU Delhi",
+      "matches": 3,
+      "score": 2905,
+      "accuracy": 15
+    },
+    {
+      "name": "Candidate_09",
+      "college": "COEP Pune",
+      "matches": 2,
+      "score": 2753,
+      "accuracy": 30
+    },
+    {
+      "name": "Candidate_50",
+      "college": "DTU Delhi",
+      "matches": 3,
+      "score": 2733,
+      "accuracy": 20
+    },
+    {
+      "name": "Candidate_29",
+      "college": "VIT Vellore",
+      "matches": 3,
+      "score": 2021,
+      "accuracy": 10
+    },
+    {
+      "name": "Candidate_45",
+      "college": "GL BAJAJ",
+      "matches": 2,
+      "score": 2014,
+      "accuracy": 20
+    },
+    {
+      "name": "Candidate_30",
+      "college": "IIIT Hyderabad",
+      "matches": 1,
+      "score": 1952,
+      "accuracy": 40
+    },
+    {
+      "name": "Urshd",
+      "college": "NIET",
+      "matches": 1,
+      "score": 1274,
+      "accuracy": 30
+    },
+    {
+      "name": "Candidate_18",
+      "college": "VIT Vellore",
+      "matches": 1,
+      "score": 952,
+      "accuracy": 20
+    },
+    {
+      "name": "Candidate_39",
+      "college": "DTU Delhi",
+      "matches": 1,
+      "score": 949,
+      "accuracy": 20
+    },
+    {
+      "name": "Candidate_41",
+      "college": "IIIT Hyderabad",
+      "matches": 1,
+      "score": 938,
+      "accuracy": 20
+    },
+    {
+      "name": "Candidate_47",
+      "college": "IIT Bombay",
+      "matches": 1,
+      "score": 935,
+      "accuracy": 20
+    },
+    {
+      "name": "Candidate_03",
+      "college": "IIT Bombay",
+      "matches": 1,
+      "score": 934,
+      "accuracy": 20
+    },
+    {
+      "name": "Candidate_08",
+      "college": "IIIT Hyderabad",
+      "matches": 1,
+      "score": 928,
+      "accuracy": 20
+    },
+    {
+      "name": "Candidate_21",
+      "college": "RVCE Bangalore",
+      "matches": 1,
+      "score": 925,
+      "accuracy": 20
+    },
+    {
+      "name": "Candidate_26",
+      "college": "BITS Pilani",
+      "matches": 1,
+      "score": 920,
+      "accuracy": 20
+    },
+    {
+      "name": "Candidate_36",
+      "college": "IIT Bombay",
+      "matches": 1,
+      "score": 899,
+      "accuracy": 20
+    },
+    {
+      "name": "Candidate_40",
+      "college": "VIT Vellore",
+      "matches": 1,
+      "score": 898,
+      "accuracy": 20
+    },
+    {
+      "name": "Candidate_04",
+      "college": "BITS Pilani",
+      "matches": 1,
+      "score": 884,
+      "accuracy": 20
+    },
+    {
+      "name": "Candidate_42",
+      "college": "COEP Pune",
+      "matches": 1,
+      "score": 759,
+      "accuracy": 20
+    },
+    {
+      "name": "Candidate_24",
+      "college": "AMITY",
+      "matches": 1,
+      "score": 755,
+      "accuracy": 20
+    },
+    {
+      "name": "Candidate_14",
+      "college": "IIT Bombay",
+      "matches": 1,
+      "score": 744,
+      "accuracy": 20
+    },
+    {
+      "name": "Candidate_20",
+      "college": "COEP Pune",
+      "matches": 1,
+      "score": 697,
+      "accuracy": 20
+    },
+    {
+      "name": "Candidate_01",
+      "college": "GL BAJAJ",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_02",
+      "college": "AMITY",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_05",
+      "college": "NIT Trichy",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_07",
+      "college": "VIT Vellore",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_06",
+      "college": "DTU Delhi",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_10",
+      "college": "RVCE Bangalore",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_11",
+      "college": "NIET",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_12",
+      "college": "GL BAJAJ",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_13",
+      "college": "AMITY",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_15",
+      "college": "BITS Pilani",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_16",
+      "college": "NIT Trichy",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_19",
+      "college": "IIIT Hyderabad",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_22",
+      "college": "NIET",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_23",
+      "college": "GL BAJAJ",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_25",
+      "college": "IIT Bombay",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_27",
+      "college": "NIT Trichy",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_28",
+      "college": "DTU Delhi",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_31",
+      "college": "COEP Pune",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_32",
+      "college": "RVCE Bangalore",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_33",
+      "college": "NIET",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_34",
+      "college": "GL BAJAJ",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_35",
+      "college": "AMITY",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_37",
+      "college": "BITS Pilani",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_38",
+      "college": "NIT Trichy",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_43",
+      "college": "RVCE Bangalore",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_44",
+      "college": "NIET",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_46",
+      "college": "AMITY",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_48",
+      "college": "BITS Pilani",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Candidate_49",
+      "college": "NIT Trichy",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 0
+    },
+    {
+      "name": "Sahil",
+      "college": "NIET",
+      "matches": 1,
+      "score": 0,
+      "accuracy": 10
+    }
+  ]
+}

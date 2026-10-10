@@ -4,14 +4,17 @@ import { socket } from "../utils/socket";
 
 const AVATARS = ["🚀", "⚡", "🔥", "🎯", "🧠", "🦁", "💎", "⭐"];
 const POPULAR_COLLEGES = [
+  "NIET", "GL BAJAJ", "AMITY",
   "IIT Bombay", "BITS Pilani", "NIT Trichy", "DTU Delhi", 
   "VIT Vellore", "IIIT Hyderabad", "COEP Pune", "RVCE Bangalore"
 ];
 
 export default function JoinScreen({ onJoined, presetRoomCode = "" }) {
-  const [roomCode, setRoomCode] = useState(presetRoomCode || localStorage.getItem("aptiquiz_last_room") || "");
+  const urlParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+  const queryRoom = urlParams?.get("room") || urlParams?.get("code") || urlParams?.get("pin") || "";
+  const [roomCode, setRoomCode] = useState(queryRoom || presetRoomCode || localStorage.getItem("aptiquiz_last_room") || "");
   const [name, setName] = useState(localStorage.getItem("aptiquiz_player_name") || "");
-  const [college, setCollege] = useState(localStorage.getItem("aptiquiz_player_college") || "IIT Bombay");
+  const [college, setCollege] = useState(localStorage.getItem("aptiquiz_player_college") || "NIET");
   const [selectedAvatar, setSelectedAvatar] = useState("🚀");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");

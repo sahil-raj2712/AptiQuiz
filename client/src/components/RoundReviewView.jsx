@@ -1,9 +1,11 @@
-import React, { useEffect } from "react";
-import { CheckCircle2, ArrowUp, ArrowDown, Minus, Play, Flame, BarChart2 } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { CheckCircle2, ArrowUp, ArrowDown, Minus, Play, Flame, BarChart2, FastForward, Clock } from "lucide-react";
 import { socket } from "../utils/socket";
 import { sound } from "../utils/soundEngine";
 
 export default function RoundReviewView({ result, room, player, isHost, onNextQuestion }) {
+  const [secondsLeft, setSecondsLeft] = useState(result.reviewDurationSeconds || 7);
+
   useEffect(() => {
     // Check if current player answered correctly and play sound
     const myEntry = result.leaderboard?.find(p => p.id === player?.id);
@@ -16,12 +18,26 @@ export default function RoundReviewView({ result, room, player, isHost, onNextQu
     }
   }, [result, player]);
 
+  useEffect(() => {
+    const totalSecs = result.reviewDurationSeconds || 7;
+    setSecondsLeft(totalSecs);
+
+    const interval = setInterval(() => {
+      setSecondsLeft((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [result]);
+
   const handleNext = () => {
     socket.emit("host_next_question", { roomCode: room.code });
   };
 
   const myEntry = result.leaderboard?.find(p => p.id === player?.id);
   const totalAnswersInRound = result.distribution ? Object.values(result.distribution).reduce((a, b) => a + b, 0) : 0;
+  const isLastQuestion = result.isLastQuestion;
+  const totalDuration = result.reviewDurationSeconds || 7;
+  const progressPct = (secondsLeft / totalDuration) * 100;
 
   return (
     <div className="animate-fade-in" style={{ maxWidth: "980px", margin: "32px auto", padding: "0 16px" }}>
@@ -197,22 +213,78 @@ export default function RoundReviewView({ result, room, player, isHost, onNextQu
         </div>
       </div>
 
-      {/* Host Controls */}
-      {isHost ? (
-        <div style={{ textAlign: "center" }}>
-          <button
-            onClick={handleNext}
-            className="btn btn-emerald btn-lg"
-            style={{ padding: "16px 40px", fontSize: "1.15rem" }}
-          >
-            Advance to Next Question <Play size={18} />
-          </button>
+      {/* Auto-Advance Round Ticker & Host Controls */}
+      <div className="glass-panel" style={{
+        padding: "20px 24px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "14px",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "rgba(15, 23, 42, 0.75)",
+        border: "1px solid rgba(99, 102, 241, 0.3)"
+      }}>
+        {/* Countdown Header */}
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          width: "100%",
+          maxWidth: "600px",
+          flexWrap: "wrap",
+          gap: "10px"
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <Clock size={20} color="var(--secondary)" className="animate-pulse" />
+            <span style={{ fontSize: "1rem", fontWeight: "700", color: "#f8fafc" }}>
+              {isLastQuestion
+                ? "Calculating Final Placement Podium & League Ratings..."
+                : `Next Question Starting in ${secondsLeft}s...`}
+            </span>
+          </div>
+
+          <span className="badge badge-indigo" style={{ fontFamily: "var(--font-mono)", fontSize: "0.85rem" }}>
+            {secondsLeft}s auto-advance
+          </span>
         </div>
-      ) : (
-        <div style={{ textAlign: "center", color: "var(--text-dim)", fontSize: "0.9rem" }}>
-          Host will advance to the next round shortly...
+
+        {/* Dynamic Visual Progress Bar */}
+        <div style={{
+          width: "100%",
+          maxWidth: "600px",
+          height: "8px",
+          background: "rgba(255, 255, 255, 0.08)",
+          borderRadius: "4px",
+          overflow: "hidden"
+        }}>
+          <div style={{
+            height: "100%",
+            width: `${progressPct}%`,
+            background: "linear-gradient(90deg, var(--secondary), var(--primary))",
+            transition: "width 1s linear"
+          }} />
         </div>
-      )}
+
+        {/* Host Instant Skip Button vs Student Indicator */}
+        {isHost ? (
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "4px" }}>
+            <button
+              onClick={handleNext}
+              className="btn btn-emerald"
+              style={{ padding: "10px 24px", fontSize: "0.95rem" }}
+            >
+              Skip Countdown & Next Question Now <FastForward size={16} />
+            </button>
+            <span style={{ fontSize: "0.8rem", color: "var(--text-dim)" }}>
+              (Or let it automatically advance in {secondsLeft}s)
+            </span>
+          </div>
+        ) : (
+          <div style={{ fontSize: "0.82rem", color: "var(--text-dim)" }}>
+            ⚡ Automatic esports transition — Get ready for the next problem!
+          </div>
+        )}
+      </div>
     </div>
   );
 }

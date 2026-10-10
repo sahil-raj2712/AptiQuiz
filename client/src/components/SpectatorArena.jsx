@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Users, Clock, Zap, Maximize, Trophy } from "lucide-react";
 import { socket } from "../utils/socket";
+import QRCodeCard from "./QRCodeCard";
 
 export default function SpectatorArena({ room, onExit }) {
   const [activeQ, setActiveQ] = useState(null);
@@ -151,11 +152,52 @@ export default function SpectatorArena({ room, onExit }) {
             </div>
           </div>
         ) : (
-          <div style={{ textAlign: "center", padding: "60px" }}>
-            <h2 style={{ fontSize: "2.4rem", marginBottom: "16px" }}>Auditorium Arena Ready</h2>
-            <p style={{ color: "var(--text-muted)", fontSize: "1.2rem" }}>
-              Host will launch questions to all 50 candidates from the Host Control Studio.
-            </p>
+          <div className="animate-fade-in" style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "28px",
+            textAlign: "center",
+            padding: "40px 20px"
+          }}>
+            <div>
+              <h2 style={{ fontSize: "2.8rem", fontWeight: "900", marginBottom: "8px", background: "linear-gradient(135deg, #ffffff 0%, #818cf8 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                Auditorium Placement Arena Ready
+              </h2>
+              <p style={{ color: "var(--text-muted)", fontSize: "1.2rem", maxWidth: "700px", margin: "0 auto" }}>
+                Scan the QR code below or visit the site and enter the PIN to join the live 50-player screening!
+              </p>
+            </div>
+
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "48px",
+              background: "rgba(15, 23, 42, 0.8)",
+              border: "2px solid var(--border-highlight)",
+              borderRadius: "var(--radius-xl)",
+              padding: "36px 56px",
+              boxShadow: "0 0 60px rgba(99, 102, 241, 0.35)",
+              flexWrap: "wrap"
+            }}>
+              <div style={{ textAlign: "center" }}>
+                <span style={{ fontSize: "1rem", color: "var(--text-dim)", textTransform: "uppercase", letterSpacing: "3px", display: "block" }}>
+                  ROOM PIN
+                </span>
+                <span style={{ fontSize: "5rem", fontWeight: "900", fontFamily: "var(--font-mono)", letterSpacing: "8px", color: "#ffffff", display: "block", margin: "4px 0" }}>
+                  {room?.code}
+                </span>
+                <span className="badge badge-emerald" style={{ fontSize: "0.95rem", padding: "8px 18px" }}>
+                  Hosted by {room?.hostCollege || "Campus Arena"}
+                </span>
+              </div>
+
+              <div style={{ width: "2px", height: "180px", background: "rgba(255, 255, 255, 0.12)" }} />
+
+              <QRCodeCard roomCode={room?.code} size={180} showDetails={true} />
+            </div>
           </div>
         )}
       </div>

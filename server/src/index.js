@@ -5,6 +5,7 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
+import os from "os";
 import { RoomManager } from "./game/RoomManager.js";
 import { DEFAULT_QUESTION_SETS } from "./data/questionBank.js";
 
@@ -39,13 +40,22 @@ const roomManager = new RoomManager(io);
 // REST API Routes
 // ==========================================
 
-// Health check
-app.get("/api/health", (req, res) => {
+// Server Info & LAN IP for Phone Join
+app.get("/api/server-info", (req, res) => {
+  const interfaces = os.networkInterfaces();
+  const addresses = [];
+  for (const name of Object.keys(interfaces)) {
+    for (const iface of interfaces[name]) {
+      if (iface.family === "IPv4" && !iface.internal) {
+        addresses.push(iface.address);
+      }
+    }
+  }
   res.json({
-    status: "healthy",
-    uptimeSeconds: Math.floor(process.uptime()),
-    activeRooms: roomManager.rooms.size,
-    timestamp: Date.now()
+    port: PORT,
+    ip: addresses[0] || "localhost",
+    allIps: addresses,
+    localUrl: `http://${addresses[0] || "localhost"}:${PORT}`
   });
 });
 
@@ -251,7 +261,7 @@ io.on("connection", socket => {
       if (room.status === "QUESTION_ACTIVE" && currentQ) {
         const shuffled = player.shuffledOptionsMap.get(room.currentQuestionIndex) || currentQ.options;
         const elapsed = (Date.now() - room.questionStartTime) / 1000;
-        const totalDuration = currentQ.timeLimitSeconds || room.roundDurationSeconds;
+        const totalDuration = Number(room.roundDurationSeconds) || Number(currentQ.timeLimitSeconds) || 25;
         const remaining = Math.max(0, totalDuration - elapsed);
 
         activeQuestionData = {

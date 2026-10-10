@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Users, Copy, Check, Play, QrCode, Shield, Sparkles } from "lucide-react";
 import { socket } from "../utils/socket";
 import { sound } from "../utils/soundEngine";
+import QRCodeCard from "./QRCodeCard";
 
 export default function LobbyView({ room, player, isHost, onGameStarted }) {
   const [players, setPlayers] = useState([]);
   const [copied, setCopied] = useState(false);
+  const [showQR, setShowQR] = useState(false);
   const [countdown, setCountdown] = useState(null);
 
   useEffect(() => {
@@ -109,35 +111,43 @@ export default function LobbyView({ room, player, isHost, onGameStarted }) {
           Share this PIN with candidates. They can join from any phone or laptop browser.
         </p>
 
-        {/* Room PIN Display */}
+        {/* Room PIN & On-Screen QR Code Container */}
         <div style={{
-          display: "inline-flex",
+          display: "flex",
+          justifyContent: "center",
           alignItems: "center",
-          gap: "18px",
-          background: "rgba(0, 0, 0, 0.4)",
-          border: "2px solid var(--border-highlight)",
-          borderRadius: "var(--radius-lg)",
-          padding: "16px 36px",
-          marginBottom: "24px",
-          boxShadow: "0 0 30px rgba(99, 102, 241, 0.25)"
+          gap: "28px",
+          flexWrap: "wrap",
+          marginBottom: "28px"
         }}>
-          <div>
+          {/* Room PIN Card */}
+          <div style={{
+            background: "rgba(0, 0, 0, 0.4)",
+            border: "2px solid var(--border-highlight)",
+            borderRadius: "var(--radius-lg)",
+            padding: "24px 36px",
+            boxShadow: "0 0 30px rgba(99, 102, 241, 0.25)",
+            textAlign: "center"
+          }}>
             <span style={{ fontSize: "0.78rem", color: "var(--text-dim)", textTransform: "uppercase", letterSpacing: "2px", display: "block" }}>
               ROOM PIN
             </span>
-            <span style={{ fontSize: "3rem", fontWeight: "900", fontFamily: "var(--font-mono)", letterSpacing: "6px", color: "#ffffff" }}>
+            <span style={{ fontSize: "3.2rem", fontWeight: "900", fontFamily: "var(--font-mono)", letterSpacing: "6px", color: "#ffffff", display: "block", margin: "6px 0 16px" }}>
               {room.code}
             </span>
+
+            <button
+              onClick={copyRoomCode}
+              className="btn btn-secondary btn-sm"
+              style={{ width: "100%", justifyContent: "center" }}
+              title="Copy Room PIN"
+            >
+              {copied ? <><Check size={16} color="var(--accent-emerald)" /> PIN Copied</> : <><Copy size={16} /> Copy Room PIN</>}
+            </button>
           </div>
 
-          <button
-            onClick={copyRoomCode}
-            className="btn btn-secondary btn-sm"
-            style={{ padding: "10px 14px", height: "fit-content" }}
-            title="Copy Room PIN"
-          >
-            {copied ? <><Check size={16} color="var(--accent-emerald)" /> Copied</> : <><Copy size={16} /> Copy PIN</>}
-          </button>
+          {/* Prominent On-Screen QR Code Card */}
+          <QRCodeCard roomCode={room.code} size={150} showDetails={true} />
         </div>
 
         {/* Action Button */}
@@ -209,6 +219,76 @@ export default function LobbyView({ room, player, isHost, onGameStarted }) {
           )}
         </div>
       </div>
+
+      {/* Phone Scan QR Code Modal */}
+      {showQR && (
+        <div style={{
+          position: "fixed",
+          inset: 0,
+          background: "rgba(0, 0, 0, 0.8)",
+          backdropFilter: "blur(12px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 3000,
+          padding: "20px"
+        }}>
+          <div className="glass-panel" style={{
+            maxWidth: "420px",
+            width: "100%",
+            padding: "32px",
+            textAlign: "center",
+            position: "relative"
+          }}>
+            <button
+              onClick={() => setShowQR(false)}
+              style={{
+                position: "absolute",
+                top: "16px",
+                right: "16px",
+                background: "none",
+                border: "none",
+                color: "var(--text-muted)",
+                fontSize: "1.2rem",
+                cursor: "pointer"
+              }}
+            >
+              ✕
+            </button>
+
+            <span className="badge badge-emerald" style={{ marginBottom: "12px" }}>
+              Mobile Instant Join
+            </span>
+            <h3 style={{ fontSize: "1.4rem", marginBottom: "8px" }}>
+              Scan QR to Join Match
+            </h3>
+            <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginBottom: "20px" }}>
+              Point your smartphone camera to connect directly to Room <strong>{room.code}</strong>
+            </p>
+
+            <div style={{
+              background: "#ffffff",
+              padding: "16px",
+              borderRadius: "16px",
+              display: "inline-block",
+              boxShadow: "0 0 30px rgba(99, 102, 241, 0.4)",
+              marginBottom: "16px"
+            }}>
+              <img
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=4&data=${encodeURIComponent(
+                  typeof window !== "undefined" ? `${window.location.origin}/?room=${room.code}` : `http://localhost:4000/?room=${room.code}`
+                )}`}
+                alt={`QR Code for Room ${room.code}`}
+                style={{ width: "200px", height: "200px", display: "block" }}
+              />
+            </div>
+
+            <div style={{ fontSize: "0.82rem", color: "var(--text-dim)" }}>
+              Direct URL: <code style={{ color: "var(--secondary)" }}>{typeof window !== "undefined" ? window.location.origin : ""}/?room={room.code}</code>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -37,6 +37,9 @@ export class RoomManager {
     }
     return {
       colleges: {
+        "NIET": { matchesPlayed: 16, totalPoints: 142800, topScore: 9950 },
+        "GL BAJAJ": { matchesPlayed: 15, totalPoints: 136200, topScore: 9890 },
+        "AMITY": { matchesPlayed: 14, totalPoints: 128500, topScore: 9780 },
         "IIT Bombay": { matchesPlayed: 14, totalPoints: 124500, topScore: 9800 },
         "BITS Pilani": { matchesPlayed: 12, totalPoints: 112000, topScore: 9650 },
         "NIT Trichy": { matchesPlayed: 10, totalPoints: 89400, topScore: 9400 },
@@ -44,6 +47,9 @@ export class RoomManager {
         "VIT Vellore": { matchesPlayed: 15, totalPoints: 132000, topScore: 9550 }
       },
       topPlayers: [
+        { name: "Aman Singh", college: "NIET", matches: 8, score: 34200, accuracy: 94 },
+        { name: "Sneha Gupta", college: "GL BAJAJ", matches: 7, score: 31500, accuracy: 91 },
+        { name: "Kabir Mehta", college: "AMITY", matches: 7, score: 29800, accuracy: 89 },
         { name: "Arjun Verma", college: "IIT Bombay", matches: 6, score: 28400, accuracy: 92 },
         { name: "Priya Sharma", college: "BITS Pilani", matches: 5, score: 24100, accuracy: 88 },
         { name: "Rohan Patel", college: "NIT Trichy", matches: 4, score: 19800, accuracy: 85 }
@@ -60,41 +66,67 @@ export class RoomManager {
   }
 
   recordMatchToLeague(room) {
-    const college = room.hostCollege || "Independent League";
-    if (!this.collegeLeague.colleges[college]) {
-      this.collegeLeague.colleges[college] = { matchesPlayed: 0, totalPoints: 0, topScore: 0 };
+    const hostCollege = room.hostCollege || "Independent League";
+    if (!this.collegeLeague.colleges[hostCollege]) {
+      this.collegeLeague.colleges[hostCollege] = { matchesPlayed: 0, totalPoints: 0, topScore: 0 };
     }
-
-    const col = this.collegeLeague.colleges[college];
-    col.matchesPlayed += 1;
+    this.collegeLeague.colleges[hostCollege].matchesPlayed += 1;
 
     const players = Array.from(room.players.values());
+    const collegesInMatch = new Set();
+
     players.forEach(p => {
+      const colName = p.college || hostCollege;
+      collegesInMatch.add(colName);
+
+      if (!this.collegeLeague.colleges[colName]) {
+        this.collegeLeague.colleges[colName] = { matchesPlayed: 0, totalPoints: 0, topScore: 0 };
+      }
+
+      const col = this.collegeLeague.colleges[colName];
       col.totalPoints += p.score;
       if (p.score > col.topScore) {
         col.topScore = p.score;
       }
 
-      // Record top players
-      const existing = this.collegeLeague.topPlayers.find(tp => tp.name === p.name && tp.college === p.college);
-      if (existing) {
-        existing.matches += 1;
-        existing.score += p.score;
-        existing.accuracy = Math.round((existing.accuracy + p.accuracy) / 2);
-      } else if (p.score > 2000) {
-        this.collegeLeague.topPlayers.push({
-          name: p.name,
-          college: p.college || college,
-          matches: 1,
-          score: p.score,
-          accuracy: p.accuracy
-        });
+      // Record / update player in Hall of Fame (every real candidate who scored points)
+      if (p.name && !p.name.startsWith("Host")) {
+        const existing = this.collegeLeague.topPlayers.find(
+          tp => tp.name.toLowerCase() === p.name.toLowerCase() && tp.college.toLowerCase() === colName.toLowerCase()
+        );
+
+        if (existing) {
+          existing.matches = (existing.matches || 1) + 1;
+          existing.score += p.score;
+          existing.accuracy = Math.round(((existing.accuracy || 0) + (p.accuracy || 0)) / 2);
+        } else {
+          this.collegeLeague.topPlayers.push({
+            name: p.name,
+            college: colName,
+            matches: 1,
+            score: p.score,
+            accuracy: p.accuracy || 0
+          });
+        }
       }
     });
 
+    // Increment matchesPlayed for participating colleges
+    collegesInMatch.forEach(colName => {
+      if (colName !== hostCollege && this.collegeLeague.colleges[colName]) {
+        this.collegeLeague.colleges[colName].matchesPlayed += 1;
+      }
+    });
+
+    // Sort top players descending by score
     this.collegeLeague.topPlayers.sort((a, b) => b.score - a.score);
-    this.collegeLeague.topPlayers = this.collegeLeague.topPlayers.slice(0, 20);
+    // Keep top 100 players so that filtering by any college has rich candidate data
+    this.collegeLeague.topPlayers = this.collegeLeague.topPlayers.slice(0, 100);
+
     this.saveCollegeLeague();
+
+    // Real-time broadcast to all clients viewing the league
+    this.io.emit("league_updated", this.collegeLeague);
   }
 
   // Generate short readable 6-character room code
@@ -121,6 +153,8 @@ export class RoomManager {
       questionTimer: null,
       questionStartTime: 0,
       roundDurationSeconds: options.roundDurationSeconds || 25,
+      reviewDurationSeconds: options.reviewDurationSeconds || 7,
+      autoAdvance: options.autoAdvance !== false, // default true: automatically moves to next round
       allowNegativeMarking: !!options.allowNegativeMarking,
       powerUpsEnabled: options.powerUpsEnabled !== false, // default true
       maxCapacity: 50,
@@ -230,6 +264,10 @@ export class RoomManager {
       clearTimeout(room.questionTimer);
       room.questionTimer = null;
     }
+    if (room.reviewTimer) {
+      clearTimeout(room.reviewTimer);
+      room.reviewTimer = null;
+    }
 
     room.currentQuestionIndex += 1;
     const questions = room.questionSet.questions;
@@ -243,7 +281,8 @@ export class RoomManager {
     room.status = "QUESTION_ACTIVE";
     room.answersCurrentRound.clear();
     room.questionStartTime = Date.now();
-    const duration = currentQ.timeLimitSeconds || room.roundDurationSeconds;
+    // Prioritize host-chosen duration for this match
+    const duration = Number(room.roundDurationSeconds) || Number(currentQ.timeLimitSeconds) || 25;
 
     // Reset single-round active 2x flags
     for (const player of room.players.values()) {
@@ -318,7 +357,7 @@ export class RoomManager {
 
     const currentQ = room.questionSet.questions[room.currentQuestionIndex];
     const serverNow = Date.now();
-    const durationMs = (currentQ.timeLimitSeconds || room.roundDurationSeconds) * 1000;
+    const durationMs = (Number(room.roundDurationSeconds) || Number(currentQ.timeLimitSeconds) || 25) * 1000;
 
     // Check if submission exceeded server cutoff
     const elapsedSinceStart = serverNow - room.questionStartTime;
@@ -465,9 +504,15 @@ export class RoomManager {
       clearTimeout(room.questionTimer);
       room.questionTimer = null;
     }
+    if (room.reviewTimer) {
+      clearTimeout(room.reviewTimer);
+      room.reviewTimer = null;
+    }
 
     room.status = "ROUND_REVIEW";
     const currentQ = room.questionSet.questions[room.currentQuestionIndex];
+    const totalQuestions = room.questionSet.questions.length;
+    const isLastQuestion = room.currentQuestionIndex + 1 >= totalQuestions;
 
     // Compute answer distribution (A, B, C, D count)
     const distribution = {};
@@ -527,6 +572,10 @@ export class RoomManager {
     // Broadcast round resolution to all players and spectators
     this.io.to(roomCode).emit("round_resolved", {
       questionIndex: room.currentQuestionIndex,
+      totalQuestions,
+      isLastQuestion,
+      autoAdvance: room.autoAdvance,
+      reviewDurationSeconds: room.reviewDurationSeconds,
       correctOptionId: currentQ.correctOptionId,
       explanation: currentQ.explanation,
       distribution,
@@ -537,16 +586,38 @@ export class RoomManager {
     // Host receives detailed breakdown
     this.io.to(`host_${roomCode}`).emit("host_round_resolved", {
       questionIndex: room.currentQuestionIndex,
+      totalQuestions,
+      isLastQuestion,
+      autoAdvance: room.autoAdvance,
+      reviewDurationSeconds: room.reviewDurationSeconds,
       correctOptionId: currentQ.correctOptionId,
       explanation: currentQ.explanation,
       distribution,
       leaderboard
     });
+
+    // Automatically transition to next question if autoAdvance is enabled
+    if (room.autoAdvance) {
+      room.reviewTimer = setTimeout(() => {
+        if (room.status === "ROUND_REVIEW") {
+          this.startNextQuestion(roomCode);
+        }
+      }, room.reviewDurationSeconds * 1000);
+    }
   }
 
   endGame(roomCode) {
     const room = this.getRoom(roomCode);
     if (!room) return;
+
+    if (room.questionTimer) {
+      clearTimeout(room.questionTimer);
+      room.questionTimer = null;
+    }
+    if (room.reviewTimer) {
+      clearTimeout(room.reviewTimer);
+      room.reviewTimer = null;
+    }
 
     room.status = "GAME_OVER";
     const totalQuestions = room.questionSet.questions.length;
