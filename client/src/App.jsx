@@ -69,13 +69,21 @@ export default function App() {
       setCurrentView("game_over");
     };
 
+    const onPlayerRoundResult = (personal) => {
+      if (personal) {
+        setCurrentPlayer(prev => prev ? { ...prev, score: personal.score, streak: personal.streak } : prev);
+      }
+    };
+
     socket.on("question_start", onQuestionStart);
     socket.on("round_resolved", onRoundResolved);
+    socket.on("player_round_result", onPlayerRoundResult);
     socket.on("game_over", onGameOver);
 
     return () => {
       socket.off("question_start", onQuestionStart);
       socket.off("round_resolved", onRoundResolved);
+      socket.off("player_round_result", onPlayerRoundResult);
       socket.off("game_over", onGameOver);
     };
   }, []);

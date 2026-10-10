@@ -14,6 +14,8 @@ export default function HostStudio({ onRoomCreated }) {
   const [powerUpsEnabled, setPowerUpsEnabled] = useState(true);
   const [allowNegativeMarking, setAllowNegativeMarking] = useState(false);
   const [autoAdvance, setAutoAdvance] = useState(true);
+  const [shuffleQuestions, setShuffleQuestions] = useState(true);
+  const [shuffleOptions, setShuffleOptions] = useState(true);
   const [launching, setLaunching] = useState(false);
 
   // New Question Set State
@@ -122,6 +124,8 @@ export default function HostStudio({ onRoomCreated }) {
         powerUpsEnabled,
         allowNegativeMarking,
         autoAdvance,
+        shuffleQuestions,
+        shuffleOptions,
         reviewDurationSeconds: 7
       }
     }, (res) => {
@@ -352,6 +356,32 @@ export default function HostStudio({ onRoomCreated }) {
                     checked={autoAdvance}
                     onChange={(e) => setAutoAdvance(e.target.checked)}
                     style={{ width: "20px", height: "20px", accentColor: "var(--accent-emerald)" }}
+                  />
+                </label>
+
+                <label style={{ display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer" }}>
+                  <div>
+                    <span style={{ fontWeight: "600", fontSize: "0.92rem", display: "block" }}>Shuffle Questions in Test</span>
+                    <span style={{ fontSize: "0.78rem", color: "var(--text-dim)" }}>Randomizes question order for test; uncheck to keep sequential order (Q1, Q2, Q3...)</span>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={shuffleQuestions}
+                    onChange={(e) => setShuffleQuestions(e.target.checked)}
+                    style={{ width: "20px", height: "20px", accentColor: "var(--primary)" }}
+                  />
+                </label>
+
+                <label style={{ display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer" }}>
+                  <div>
+                    <span style={{ fontWeight: "600", fontSize: "0.92rem", display: "block" }}>Shuffle Options per Student (Anti-Cheat)</span>
+                    <span style={{ fontSize: "0.78rem", color: "var(--text-dim)" }}>Scrambles option order on each device; uncheck for identical A/B/C/D order for all</span>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={shuffleOptions}
+                    onChange={(e) => setShuffleOptions(e.target.checked)}
+                    style={{ width: "20px", height: "20px", accentColor: "var(--secondary)" }}
                   />
                 </label>
               </div>

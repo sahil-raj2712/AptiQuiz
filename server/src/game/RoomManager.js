@@ -157,12 +157,18 @@ export class RoomManager {
       autoAdvance: options.autoAdvance !== false, // default true: automatically moves to next round
       allowNegativeMarking: !!options.allowNegativeMarking,
       powerUpsEnabled: options.powerUpsEnabled !== false, // default true
+      shuffleQuestions: options.shuffleQuestions !== false, // Host toggle: shuffle question sequence
+      shuffleOptions: options.shuffleOptions !== false, // Host toggle: shuffle options per candidate
       maxCapacity: 50,
       players: new Map(), // playerId -> Player
       answersCurrentRound: new Map(), // playerId -> AnswerObj
       roundStats: [], // stats per question
       previousRankings: [] // for tracking rank climb/drop
     };
+
+    if (room.shuffleQuestions) {
+      room.questionSet.questions = shuffleArray(room.questionSet.questions);
+    }
 
     this.rooms.set(roomCode, room);
     return room;
@@ -295,11 +301,11 @@ export class RoomManager {
       .map(p => p.id);
     room.previousRankings = currentStandings;
 
-    // Send question to each player with SHUFFLED OPTIONS (Anti-cheat & fairness)
+    // Send question to each player with options (shuffled if shuffleOptions is enabled)
     // Notice: correctOptionId is NEVER sent to the client!
     for (const player of room.players.values()) {
-      const shuffled = shuffleArray(currentQ.options);
-      player.shuffledOptionsMap.set(room.currentQuestionIndex, shuffled);
+      const optionsToSend = room.shuffleOptions !== false ? shuffleArray(currentQ.options) : [...currentQ.options];
+      player.shuffledOptionsMap.set(room.currentQuestionIndex, optionsToSend);
 
       if (player.socketId) {
         this.io.to(player.socketId).emit("question_start", {
@@ -311,7 +317,7 @@ export class RoomManager {
           question: currentQ.question,
           hasTable: !!currentQ.hasTable,
           tableData: currentQ.tableData || null,
-          options: shuffled.map(opt => ({ id: opt.id, text: opt.text })), // clean options without any answer clues
+          options: optionsToSend.map(opt => ({ id: opt.id, text: opt.text })), // clean options without any answer clues
           timeLimitSeconds: duration,
           serverStartTime: room.questionStartTime,
           streak: player.streak,
@@ -556,6 +562,61 @@ export class RoomManager {
       };
     });
 
+    // Build canonical options with correct flag
+    const optionsPayload = currentQ.options.map((opt, idx) => ({
+      id: opt.id,
+      text: opt.text,
+      letter: String.fromCharCode(65 + idx),
+      isCorrect: opt.id === currentQ.correctOptionId
+    }));
+
+    const correctOpt = currentQ.options.find(o => o.id === currentQ.correctOptionId);
+
+    // Distribution with full option details and letters
+    const distributionDetails = currentQ.options.map((opt, idx) => ({
+      id: opt.id,
+      text: opt.text,
+      letter: String.fromCharCode(65 + idx),
+      isCorrect: opt.id === currentQ.correctOptionId,
+      count: distribution[opt.id] || 0
+    }));
+
+    // Build comprehensive personalized results map for every player (rank 1 to 50)
+    const playerResults = {};
+    for (const player of room.players.values()) {
+      const answer = room.answersCurrentRound.get(player.id);
+      const chosenOpt = answer ? currentQ.options.find(o => o.id === answer.optionId) : null;
+
+      // Determine option letter as presented on THIS player's device
+      const playerShuffled = player.shuffledOptionsMap?.get(room.currentQuestionIndex) || currentQ.options;
+      const chosenIndex = chosenOpt ? playerShuffled.findIndex(o => o.id === chosenOpt.id) : -1;
+      const correctIndex = correctOpt ? playerShuffled.findIndex(o => o.id === correctOpt.id) : -1;
+
+      const pRank = sortedPlayers.findIndex(p => p.id === player.id) + 1;
+
+      playerResults[player.id] = {
+        playerId: player.id,
+        playerName: player.name,
+        hasAnswered: !!answer,
+        answeredCorrectly: answer ? answer.isCorrect : false,
+        selectedOptionId: answer ? answer.optionId : null,
+        selectedOptionText: chosenOpt ? chosenOpt.text : null,
+        selectedOptionLetter: chosenIndex >= 0 ? String.fromCharCode(65 + chosenIndex) : null,
+        correctOptionId: currentQ.correctOptionId,
+        correctOptionText: correctOpt ? correctOpt.text : "",
+        correctOptionLetter: correctIndex >= 0 ? String.fromCharCode(65 + correctIndex) : "A",
+        pointsEarned: answer ? answer.pointsEarned : (room.allowNegativeMarking ? -200 : 0),
+        score: player.score,
+        streak: player.streak,
+        rank: pRank
+      };
+
+      // Emit direct personal notification to player socket
+      if (player.socketId) {
+        this.io.to(player.socketId).emit("player_round_result", playerResults[player.id]);
+      }
+    }
+
     // Record round statistics for faculty analytics
     room.roundStats.push({
       questionIndex: room.currentQuestionIndex,
@@ -576,9 +637,14 @@ export class RoomManager {
       isLastQuestion,
       autoAdvance: room.autoAdvance,
       reviewDurationSeconds: room.reviewDurationSeconds,
+      questionText: currentQ.question,
+      options: optionsPayload,
       correctOptionId: currentQ.correctOptionId,
+      correctOptionText: correctOpt ? correctOpt.text : "",
       explanation: currentQ.explanation,
       distribution,
+      distributionDetails,
+      playerResults,
       leaderboard: leaderboard.slice(0, 10), // Top 10 for quick display
       fullLeaderboardLength: leaderboard.length
     });
@@ -590,9 +656,14 @@ export class RoomManager {
       isLastQuestion,
       autoAdvance: room.autoAdvance,
       reviewDurationSeconds: room.reviewDurationSeconds,
+      questionText: currentQ.question,
+      options: optionsPayload,
       correctOptionId: currentQ.correctOptionId,
+      correctOptionText: correctOpt ? correctOpt.text : "",
       explanation: currentQ.explanation,
       distribution,
+      distributionDetails,
+      playerResults,
       leaderboard
     });
 

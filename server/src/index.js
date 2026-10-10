@@ -177,7 +177,9 @@ io.on("connection", socket => {
           totalQuestions: room.questionSet.questions.length,
           roundDurationSeconds: room.roundDurationSeconds,
           powerUpsEnabled: room.powerUpsEnabled,
-          allowNegativeMarking: room.allowNegativeMarking
+          allowNegativeMarking: room.allowNegativeMarking,
+          shuffleQuestions: room.shuffleQuestions,
+          shuffleOptions: room.shuffleOptions
         }
       });
     } catch (err) {
