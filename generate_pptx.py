@@ -69,25 +69,38 @@ def create_deck():
     set_slide_background(s1)
 
     # Big Badge
-    badge1 = s1.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.0), Inches(0.9), Inches(5.2), Inches(0.45))
+    badge1 = s1.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.0), Inches(0.65), Inches(5.1), Inches(0.42))
     badge1.fill.solid()
     badge1.fill.fore_color.rgb = RGBColor(30, 36, 65)
     badge1.line.color.rgb = PRIMARY
     b1_tf = badge1.text_frame
     b1_tf.text = "CODE2CAREER HACKATHON • PROBLEM STATEMENT #3"
     b1_p = b1_tf.paragraphs[0]
-    b1_p.font.size = Pt(11)
+    b1_p.font.size = Pt(10)
     b1_p.font.bold = True
     b1_p.font.color.rgb = CYAN
     b1_p.alignment = PP_ALIGN.CENTER
 
+    # Team Badge
+    team_badge = s1.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.3), Inches(0.65), Inches(6.0), Inches(0.42))
+    team_badge.fill.solid()
+    team_badge.fill.fore_color.rgb = RGBColor(35, 30, 60)
+    team_badge.line.color.rgb = AMBER
+    tb_tf = team_badge.text_frame
+    tb_tf.text = "TEAM: LOGIC LORDS  |  LEAD: SAHIL RAJ  |  MEMBER: SHAURYA PRATAP SINGH"
+    tb_p = tb_tf.paragraphs[0]
+    tb_p.font.size = Pt(9.5)
+    tb_p.font.bold = True
+    tb_p.font.color.rgb = RGBColor(253, 224, 71)
+    tb_p.alignment = PP_ALIGN.CENTER
+
     # Main Title
-    t1_box = s1.shapes.add_textbox(Inches(1.0), Inches(1.5), Inches(11.3), Inches(1.8))
+    t1_box = s1.shapes.add_textbox(Inches(1.0), Inches(1.35), Inches(11.3), Inches(2.0))
     t1_tf = t1_box.text_frame
     t1_tf.word_wrap = True
     p = t1_tf.paragraphs[0]
     p.text = "AptiQuiz"
-    p.font.size = Pt(56)
+    p.font.size = Pt(54)
     p.font.bold = True
     p.font.color.rgb = TEXT_WHITE
 
@@ -95,6 +108,12 @@ def create_deck():
     p_sub.text = "Live Multiplayer Aptitude Esports Arena for Campus Placements"
     p_sub.font.size = Pt(20)
     p_sub.font.color.rgb = CYAN
+
+    p_lead = t1_tf.add_paragraph()
+    p_lead.text = "Presented by Team Logic Lords — Sahil Raj (Lead) & Shaurya Pratap Singh"
+    p_lead.font.size = Pt(13)
+    p_lead.font.bold = True
+    p_lead.font.color.rgb = RGBColor(203, 213, 225)
 
     # 3 Summary Cards
     card_data = [
@@ -591,19 +610,32 @@ def create_deck():
     gp3.font.color.rgb = TEXT_MUTED
 
     # Footer
-    foot = s10.shapes.add_textbox(Inches(1.0), Inches(6.2), Inches(11.3), Inches(0.8))
+    foot = s10.shapes.add_textbox(Inches(1.0), Inches(5.8), Inches(11.3), Inches(1.2))
     ftf = foot.text_frame
     fp = ftf.paragraphs[0]
-    fp.text = "Thank you! We are now open for Judges' Q&A."
-    fp.font.size = Pt(18)
+    fp.text = "Team: Logic Lords  •  Team Lead: Sahil Raj  •  Member: Shaurya Pratap Singh"
+    fp.font.size = Pt(15)
     fp.font.bold = True
-    fp.font.color.rgb = TEXT_WHITE
+    fp.font.color.rgb = CYAN
     fp.alignment = PP_ALIGN.CENTER
 
+    fp2 = ftf.add_paragraph()
+    fp2.text = "Thank you! We are now open for Judges' Q&A."
+    fp2.font.size = Pt(17)
+    fp2.font.bold = True
+    fp2.font.color.rgb = TEXT_WHITE
+    fp2.alignment = PP_ALIGN.CENTER
+
     # Save to file
-    output_path = "AptiQuiz_Presentation.pptx"
+    output_path = "AptiQuiz_LogicLords.pptx"
     prs.save(output_path)
-    print(f"✅ Successfully generated PowerPoint file: {output_path}")
+    print(f"Successfully generated PowerPoint file: {output_path}")
+
+    try:
+        prs.save("AptiQuiz_Presentation.pptx")
+        print("Successfully updated: AptiQuiz_Presentation.pptx")
+    except Exception as e:
+        print(f"Notice: AptiQuiz_Presentation.pptx is open in PowerPoint. Saved as {output_path} instead.")
 
 if __name__ == "__main__":
     create_deck()

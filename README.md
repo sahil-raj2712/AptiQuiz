@@ -1,9 +1,13 @@
 # AptiQuiz: Real-Time Multiplayer Placement Aptitude Arena
 
 ### Problem Statement #3: AptiQuiz (Aptitude practice as a live multiplayer game)
+**Team**: Logic Lords  
+**Team Lead**: Sahil Raj  
+**Team Member**: Shaurya Pratap Singh  
 
 > 🚀 **Live Production Deployment**: [https://aptiquiz-q9br.onrender.com/](https://aptiquiz-q9br.onrender.com/)  
-> 📊 **Grand Finale Presentation Deck (Interactive Slides)**: [https://aptiquiz-q9br.onrender.com/presentation.html](https://aptiquiz-q9br.onrender.com/presentation.html)
+> 📊 **Grand Finale Presentation Deck (Interactive Slides)**: [https://aptiquiz-q9br.onrender.com/presentation.html](https://aptiquiz-q9br.onrender.com/presentation.html)  
+> 📥 **PowerPoint Deck Download (.pptx)**: [https://aptiquiz-q9br.onrender.com/AptiQuiz_LogicLords.pptx](https://aptiquiz-q9br.onrender.com/AptiQuiz_LogicLords.pptx)
 
 ---
 
