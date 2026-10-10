@@ -4,7 +4,7 @@
   "description": "AptiQuiz - Real-Time Multiplayer Aptitude Arena for Campus Placements (Problem Statement 3)",
   "type": "module",
   "scripts": {
-    "postinstall": "npm install --prefix server && npm install --prefix client",
+    "postinstall": "npm install --prefix server && npm install --prefix client --include=dev",
     "start": "node server/src/index.js",
     "server": "node server/src/index.js",
     "client": "npm run dev --prefix client",
