@@ -16,33 +16,7 @@
 
 ---
 
-## 2. Done / Left / Plan
-
-### Done (What Works Now)
-- **Authoritative Server Referee**: Built on Node.js and Socket.IO; controls state transitions (`LOBBY`, `COUNTDOWN`, `QUESTION_ACTIVE`, `ROUND_REVIEW`, `GAME_OVER`), countdown intervals, and score validation. Client clocks are strictly distrusted.
-- **Cheating-Resistant Protocol**: Unique option shuffling per player socket, zero correct-answer leakage to the client before round cutoff, and automated rejection of duplicate or late packets.
-- **Fairness Under Network Delay**: Real-time RTT latency measurement with server-side arrival compensation.
-- **Stateful Mid-Match Reconnection**: Players can refresh their browser or recover from Wi-Fi drops without losing their score, streak, or current round standing.
-- **Full Question Authoring**: Preloaded sets with Quantitative, Logical, Verbal, and Data Interpretation questions (with tables and formulas) + in-app faculty question authoring.
-- **Interactive Game Arena**: Synchronized countdown, tactile response, power-ups (50:50 and 2x Multiplier), and sound synthesis.
-- **Leaderboards & Post-Game Analytics**: Dynamic rank movement ($\uparrow$ climbed, $\downarrow$ dropped), confetti celebration, student topic strength diagnostic card, and downloadable Faculty CSV report.
-- **College League Circuit**: Aggregated inter-college rankings and student Hall of Fame.
-- **50-Player Benchmark Script**: Tested and validated with 50 concurrent automated simulated players.
-
-### Left (Next 16 Hours)
-- Multi-college live tournament brackets (Team vs. Team college battles).
-- Adaptive AI difficulty that scales question complexity based on lobby accuracy.
-- OCR question import for faculty from placement PDF papers.
-
-### Execution Plan
-1. **Hours 1–4**: Enhance mobile viewport responsiveness and conduct multi-device staging tests.
-2. **Hours 5–8**: Deploy production build to cloud hosting (Render / Railway) with HTTPS and secure WebSocket clustering.
-3. **Hours 9–12**: Finalize presentation slide deck (PPT) with architecture diagrams and record offline backup demonstration video.
-4. **Hours 13–16**: Final rehearsals for the 3-minute Round 1 table demo and 6-minute stage finale presentation.
-
----
-
-## 3. Architecture and Why
+## 2. Architecture and Why
 
 ```
                      ┌────────────────────────────────────────┐
@@ -77,7 +51,7 @@
 
 ---
 
-## 4. What We Added (Differentiators)
+## 3. What We Added (Differentiators)
 
 1. **Auditorium Projector / Spectator Mode**: A dedicated high-contrast, large-typography presentation view designed for campus auditorium projectors during college placement drives.
 2. **Zero-Dependency Procedural Web Audio Engine**: Synthesized game-show audio (clock ticks, correct harmonic chimes, wrong buzzers, 50:50 sweeps, victory fanfare) generated in pure Web Audio API without bulky MP3 files.
@@ -86,7 +60,7 @@
 
 ---
 
-## 5. Network Delay Fairness (Plain Words)
+## 4. Network Delay Fairness (Plain Words)
 
 In live multiplayer tests, a student on a fast 20ms campus fiber connection should not automatically beat a student answering on a 120ms mobile 4G hotspot.
 
@@ -99,7 +73,7 @@ In live multiplayer tests, a student on a fast 20ms campus fiber connection shou
 
 ---
 
-## 6. 50-Player Benchmark Script & Verification
+## 5. 50-Player Benchmark Script & Verification
 
 To satisfy the 50-player concurrency requirement, an automated simulation script is included at [`tests/simulate_50_players.js`](file:///d:/Code2Career/tests/simulate_50_players.js).
 
@@ -128,7 +102,7 @@ The script spawns a host socket, creates a room, connects 50 simulated player We
 
 ---
 
-## 7. How to Run It
+## 6. How to Run It
 
 ### Prerequisites
 - Node.js v18+ and npm installed
@@ -156,7 +130,7 @@ Open your browser to:
 
 ---
 
-## 8. Tools and AI Used
+## 7. Tools and AI Used
 
 - **Runtime & Backend**: Node.js, Express, Socket.IO, UUID.
 - **Frontend & UI**: React 19, Vite, Lucide Icons, Canvas-Confetti, Web Audio API.
@@ -165,7 +139,7 @@ Open your browser to:
 
 ---
 
-## 9. Who It Is For & Retention Hook
+## 8. Who It Is For & Retention Hook
 
 - **Primary Audience**: Engineering and management college students preparing for competitive placement aptitude screenings (TCS NQT, Infosys, Accenture, Cognizant, Product startups).
 - **Secondary Audience**: Placement training officers and college faculty seeking real-time engagement and diagnostic data.
