@@ -241,28 +241,6 @@
       margin-top: 16px;
     }
 
-    .nav-controls {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .btn-nav {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #f8fafc;
-      padding: 8px 18px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.2s;
-    }
-
-    .btn-nav:hover {
-      background: var(--primary);
-      border-color: var(--primary);
-    }
-
     .progress-bar-container {
       position: fixed;
       bottom: 0;
@@ -280,7 +258,6 @@
       transition: width 0.3s ease;
     }
 
-    /* Keyboard indicator */
     .kb-hint {
       font-size: 0.8rem;
       color: var(--text-dim);
@@ -305,7 +282,12 @@
     <!-- SLIDE 1: Title -->
     <div class="slide active" id="slide-1">
       <div>
-        <div class="badge">Code2Career Hackathon • Problem Statement #3</div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 8px;">
+          <div class="badge">Code2Career Hackathon • Problem Statement #3</div>
+          <a href="https://aptiquiz-q9br.onrender.com/" target="_blank" class="badge badge-emerald" style="text-decoration: none;">
+            🌐 Live: aptiquiz-q9br.onrender.com ↗
+          </a>
+        </div>
         <h1 style="font-size: 3.8rem;">AptiQuiz</h1>
         <p class="subtitle" style="font-size: 1.4rem; color: #cbd5e1; max-width: 800px;">
           Live Multiplayer Aptitude Esports Arena for Campus Placements
@@ -513,6 +495,7 @@ const timeRemaining = Math.max(0, durationMs - fairResponseTime);
             <li>Single-Port Unified Serving (Client built to <code>/dist</code>, served via Express)</li>
             <li>Zero CORS friction in production</li>
             <li>Dynamic Wi-Fi LAN / Cloud Domain detection</li>
+            <li><strong>Live on Render:</strong> <a href="https://aptiquiz-q9br.onrender.com/" target="_blank" style="color: var(--secondary);">aptiquiz-q9br.onrender.com</a></li>
           </ul>
         </div>
       </div>
@@ -653,14 +636,18 @@ const timeRemaining = Math.max(0, durationMs - fairResponseTime);
         </p>
 
         <div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;">
-          <div class="stat-box" style="min-width: 240px;">
-            <div style="font-size: 1.1rem; color: var(--secondary); font-weight: 700; margin-bottom: 4px;">GitHub Repository</div>
-            <div style="font-size: 0.9rem; color: #cbd5e1; font-family: monospace;">sahil-raj2712/AptiQuiz</div>
-          </div>
-          <div class="stat-box" style="min-width: 240px;">
-            <div style="font-size: 1.1rem; color: var(--accent-emerald); font-weight: 700; margin-bottom: 4px;">Live Cloud Deployment</div>
-            <div style="font-size: 0.9rem; color: #cbd5e1; font-family: monospace;">Render Web Service</div>
-          </div>
+          <a href="https://github.com/sahil-raj2712/AptiQuiz" target="_blank" style="text-decoration: none;">
+            <div class="stat-box" style="min-width: 260px; cursor: pointer; border-color: var(--primary);">
+              <div style="font-size: 1.1rem; color: var(--secondary); font-weight: 700; margin-bottom: 4px;">GitHub Repository ↗</div>
+              <div style="font-size: 0.95rem; color: #cbd5e1; font-family: monospace;">sahil-raj2712/AptiQuiz</div>
+            </div>
+          </a>
+          <a href="https://aptiquiz-q9br.onrender.com/" target="_blank" style="text-decoration: none;">
+            <div class="stat-box" style="min-width: 260px; cursor: pointer; border-color: var(--accent-emerald); background: rgba(16, 185, 129, 0.12); box-shadow: 0 0 25px rgba(16, 185, 129, 0.25);">
+              <div style="font-size: 1.1rem; color: var(--accent-emerald); font-weight: 700; margin-bottom: 4px;">🌐 Live Cloud URL (Play Now) ↗</div>
+              <div style="font-size: 0.95rem; color: #ffffff; font-family: monospace; font-weight: bold;">aptiquiz-q9br.onrender.com</div>
+            </div>
+          </a>
         </div>
       </div>
 

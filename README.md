@@ -2,6 +2,9 @@
 
 ### Problem Statement #3: AptiQuiz (Aptitude practice as a live multiplayer game)
 
+> 🚀 **Live Production Deployment**: [https://aptiquiz-q9br.onrender.com/](https://aptiquiz-q9br.onrender.com/)  
+> 📊 **Grand Finale Presentation Deck (Interactive Slides)**: [https://aptiquiz-q9br.onrender.com/presentation.html](https://aptiquiz-q9br.onrender.com/presentation.html)
+
 ---
 
 ## 1. What It Does
