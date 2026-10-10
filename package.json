@@ -1,0 +1,16 @@
+{
+  "name": "code2career-aptiquiz",
+  "version": "1.0.0",
+  "description": "AptiQuiz - Real-Time Multiplayer Aptitude Arena for Campus Placements (Problem Statement 3)",
+  "type": "module",
+  "scripts": {
+    "start": "node server/src/index.js",
+    "server": "node server/src/index.js",
+    "client": "npm run dev --prefix client",
+    "test:50": "node tests/simulate_50_players.js",
+    "build": "npm run build --prefix client"
+  },
+  "dependencies": {
+    "socket.io-client": "^4.8.1"
+  }
+}
